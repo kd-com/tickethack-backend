@@ -9,6 +9,9 @@ const cors = require('cors');
 
 var tripRouter = require('./routes/trips');
 var usersRouter = require('./routes/users');
+var indexRouter = require('./routes/index');
+var indexCart = require('./routes/cart')
+//var indexBooking = require('./routes/booking')
 
 var app = express();
 app.use(cors());
@@ -21,5 +24,8 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', tripRouter);
 app.use('/users', usersRouter);
+app.use('/', indexRouter);
+app.use('/cart', indexCart);
+//app.use('/booking', indexBooking)
 
 module.exports = app;
