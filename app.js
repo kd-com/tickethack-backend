@@ -21,7 +21,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-app.use('/', tripRouter);
+app.use('/trips', tripRouter);
 app.use('/', indexRouter);
 app.use('/cart', indexCart);
 //app.use('/booking', indexBooking)

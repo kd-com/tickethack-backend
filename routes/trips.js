@@ -1,25 +1,32 @@
 var express = require('express');
 var router = express.Router();
-const fetch = require('node-fetch')
+const moment = require('moment')
 const  Trip = require('../models/trip')
 
 
 // get All trips
-router.get('/trips : ', (req, res) => {
+router.get('/', (req, res) => {
     Trip.find().then (response => {
         res.status(200).json({AllTrips: response})
     })
 })
 
-router.get('/trips/:departure/:arrival/:date', (req, res) => {
-        const departure = req.params.departure
-        const arrival = req.params.arrival
-        const date = new Date(req.params.date).getTime()
-  Trip.find({departure, arrival}).then( response => {
-    const data = response.filter(el => el.date.getTime() > date)
-    return res.status(200).json({data})
-  })
+router.get('/:departure/:arrival/:date', (req, res) => {
+  const { departure, arrival, date } = req.params
 
+  console.log('Params reçus:', departure, arrival, date)
+
+  Trip.find({ departure, arrival })
+    .then(response => {
+      console.log('Trajets trouvés:', response)
+
+      const filteredTrips = response.filter(trip => {
+        const tripDate = moment(trip.date).format('YYYY-MM-DD')
+        console.log('Comparaison:', tripDate, '===', date)
+        return tripDate === date
+      })
+      res.json({ filteredTrips })
+    })
 })
 
 module.exports = router;
