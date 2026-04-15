@@ -2,13 +2,8 @@
 const mongoose = require('mongoose');
 
 const cartSchema = mongoose.Schema({
-    isBook: Boolean,
-    trips: [{ // ← plus de ObjectId/ref, on stocke l'objet complet
-        departure: String,
-        arrival: String,
-        date: Date,
-        price: Number
-    }]
+    isBook: {type: Boolean, default: false},
+    trips: [{type: mongoose.Schema.Types.ObjectId, ref: 'trips'}]
 });
 
 const Cart = mongoose.model('cart', cartSchema);
