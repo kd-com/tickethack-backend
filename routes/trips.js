@@ -12,9 +12,12 @@ router.get('/trips : ', (req, res) => {
 })
 
 router.get('/trips/:departure/:arrival/:date', (req, res) => {
-  const {departure, arrival, date} = req.params
+        const departure = req.params.departure
+        const arrival = req.params.arrival
+        const date = new Date(req.params.date).getTime()
   Trip.find({departure, arrival}).then( response => {
-    res.status(200).json({response})
+    const data = response.filter(el => el.date.getTime() > date)
+    return res.status(200).json({data})
   })
 
 })
