@@ -27,7 +27,7 @@ router.post("/:id", async (req, res) => {
       }
     } else {
       // 4 on créé un nouveau panier
-      await new Cart({isBook: false, trips:[trip._id]}).save()
+      await new Cart({isBook: false, trips:trip._id}).save()
     }
     // 5 renvoi le panier coplet et populé
     const updatedCart = await Cart.findOne({isBook: false}).populate('trips');
