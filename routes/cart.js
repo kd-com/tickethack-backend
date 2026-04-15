@@ -14,28 +14,29 @@ router.post("/:id", (req, res) => {
       if (!trip) {
         return res.json({ result: false, error: "Voyage introuvable" });
       }
-
-      // Vérifie si le voyage est déjà dans le panier
-      return Cart.findOne({ "trips._id": trip._id })
-        .then((dbData) => {
-          if (dbData !== null) {
-            return res.json({
-              result: false,
-              error: "Le voyage est déjà dans votre panier",
-            });
+      // vérifie si le trip est déjà dans un panier
+      return Cart.findOne({"trips._id": trip._id})
+        .then((tripAlreadyInCart) => {
+          if(tripAlreadyInCart) {
+            return res.json({result: false, error: "Le voyage est déjà dans votre panier"})
           }
-
-          // Ajoute l'objet complet du trip dans le panier
-          const newCart = new Cart({
-            isBook: false,
-            trips: [trip], // ← objet complet
-          });
-
-          return newCart.save();
+          // cherche un panier non validé
+          return Cart.findOne({isBook: false})
+          .then((cart) => {
+            // on trouve un panier en false
+            if(cart) {
+              cart.trips.push(trip)
+              return cart.save();
+            } else {
+              // il n'y a pas de panier en false
+              const newCart = new Cart({isBook: false, trips: [trip]});
+              return newCart.save()
+            }
+          })
+          .then((savedCart) => {
+            res.json({result: true, cart : savedCart})
+          })
         })
-        .then((savedCart) => {
-          res.json({ result: true, cart: savedCart });
-        });
     })
     .catch((err) => {
       console.error(err);
